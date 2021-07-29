@@ -1,0 +1,93 @@
+ImageLoader =
+  init: ->
+    return unless g.VIEW in ['index', 'thread'] and g.BOARD.ID isnt 'f'
+    return unless Conf['Image Prefetching'] or
+      Conf['Replace JPG'] or Conf['Replace PNG'] or Conf['Replace GIF'] or Conf['Replace WEBM']
+
+    Callbacks.Post.push
+      name: 'Image Replace'
+      cb:   @node
+
+    $.on d, 'PostsInserted', ->
+      g.posts.forEach ImageLoader.prefetch
+
+    if Conf['Replace WEBM']
+      $.on d, 'scroll visibilitychange 4chanXInitFinished PostsInserted', @playVideos
+
+    return unless Conf['Image Prefetching']
+
+    prefetch = $.el 'label',
+      <%= html('<input type="checkbox" name="prefetch"> Prefetch Images') %>
+
+    @el = prefetch.firstElementChild
+    $.on @el, 'change', @toggle
+
+    Header.menu.addEntry
+      el: prefetch
+      order: 98
+
+  node: ->
+    return if @isClone or !@file
+    ImageLoader.replaceVideo @ if Conf['Replace WEBM'] and @file.isVideo
+    ImageLoader.prefetch @
+
+  replaceVideo: (post) ->
+    {file} = post
+    {thumb} = file
+    video = $.el 'video',
+      preload:     'none'
+      loop:        true
+      muted:       true
+      poster:      thumb.src or thumb.dataset.src
+      textContent: thumb.alt
+      className:   thumb.className
+    video.setAttribute 'muted', 'muted'
+    video.dataset.md5 = thumb.dataset.md5
+    video.style[attr] = thumb.style[attr] for attr in ['height', 'width', 'maxHeight', 'maxWidth']
+    video.src         = file.url
+    $.replace thumb, video
+    file.thumb      = video
+    file.videoThumb = true
+
+  prefetch: (post) ->
+    {file} = post
+    return unless file
+    {isImage, isVideo, thumb, url} = file
+    return if file.isPrefetched or !(isImage or isVideo) or post.isHidden or post.thread.isHidden
+    type    = if (match = url.match(/\.([^.]+)$/)[1].toUpperCase()) is 'JPEG' then 'JPG' else match
+    replace = Conf["Replace #{type}"] and !/spoiler/.test(thumb.src or thumb.dataset.src)
+    return unless replace or Conf['prefetch']
+    return unless [post, post.clones...].some (clone) -> doc.contains clone.nodes.root
+    file.isPrefetched = true
+    if file.videoThumb
+      clone.file.thumb.preload = 'auto' for clone in post.clones
+      thumb.preload = 'auto'
+      # XXX Cloned video elements with poster in Firefox cause momentary display of image loading icon.
+      if $.engine is 'gecko'
+        $.on thumb, 'loadeddata', -> @removeAttribute 'poster'
+      return
+
+    el = $.el if isImage then 'img' else 'video'
+    if replace and isImage
+      $.on el, 'load', ->
+        clone.file.thumb.src = url for clone in post.clones
+        thumb.src = url
+        # XXX https://bugzilla.mozilla.org/show_bug.cgi?id=1021289
+        thumb.removeAttribute 'data-src'
+    el.src = url
+
+  toggle: ->
+    if Conf['prefetch'] = @checked
+      g.posts.forEach ImageLoader.prefetch
+    return
+
+  playVideos: ->
+    # Special case: Quote previews are off screen when inserted into document, but quickly moved on screen.
+    qpClone = $.id('qp')?.firstElementChild
+    g.posts.forEach (post) ->
+      for post in [post, post.clones...] when post.file?.videoThumb
+        {thumb} = post.file
+        if Header.isNodeVisible(thumb) or post.nodes.root is qpClone then thumb.play() else thumb.pause()
+      return
+
+return ImageLoader
