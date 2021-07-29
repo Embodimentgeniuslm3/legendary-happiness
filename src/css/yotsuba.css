@@ -1,0 +1,101 @@
+/* General */
+:root.yotsuba .dialog {
+  background-color: #F0E0D6;
+  border-color: #D9BFB7;
+}
+:root.yotsuba .field:focus,
+:root.yotsuba .field.focus {
+  border-color: #EA8;
+}
+
+/* 4chan style fixes */
+:root.yotsuba.highlight-you .quotesYou$site$highlightable$reply {
+  border-left: 3px solid rgba(221, 0, 0, .8) !important;
+}
+:root.yotsuba.highlight-own .yourPost$site$highlightable$reply {
+  border-left: 3px dashed rgba(221, 0, 0, .8) !important;
+}
+
+/* Header */
+:root.yotsuba #header-bar.dialog {
+  background-color: rgba(240,224,214,0.98);
+}
+:root.yotsuba:not(.fixed) #header-bar, :root.yotsuba #notifications {
+  font-size: 9pt;
+}
+:root.yotsuba #header-bar, :root.yotsuba #notifications {
+  color: #B86;
+}
+:root.yotsuba #board-list a, :root.yotsuba #shortcuts a  {
+  color: #800000;
+}
+
+/* Settings */
+:root.yotsuba #fourchanx-settings fieldset, :root.yotsuba .section-main div::before {
+  border-color: #D9BFB7;
+}
+:root.yotsuba .suboption-list > div:last-of-type {
+  background-color: #F0E0D6;
+}
+
+/* Catalog */
+:root.yotsuba.catalog-hover-expand .catalog-container:hover > .post {
+  background-color: #F0E0D6;
+}
+:root.yotsuba.werkTyme .catalog-thread:not(:hover),
+:root.yotsuba.werkTyme:not(.catalog-hover-expand) .catalog-thread,
+:root.yotsuba.catalog-hover-expand .catalog-container:hover > .post,
+:root.yotsuba.catalog-hover-expand .catalog-container:hover .catalog-reply {
+  border-color: #D9BFB7;
+}
+
+/* Quote */
+:root.yotsuba .backlink.deadlink {
+  color: #00E !important;
+}
+:root.yotsuba .inline {
+  border-color: #D9BFB7;
+  background-color: rgba(255, 255, 255, .14);
+}
+
+/* Fappe and Werk Tyme */
+:root.yotsuba .indicator {
+  color: #F0E0D6;
+}
+
+/* QR */
+.yotsuba #dump-list::-webkit-scrollbar-thumb {
+  background-color: #F0E0D6;
+  border-color: #D9BFB7;
+}
+:root.yotsuba .qr-preview {
+  background-color: rgba(0, 0, 0, .15);
+}
+:root.yotsuba .qr-link {
+  border-color: rgb(225, 209, 199) rgb(225, 209, 199) rgb(210, 194, 184);
+  background: linear-gradient(#FFEFE5, #F0E0D6) repeat scroll 0% 0% transparent;
+}
+:root.yotsuba .qr-link:hover {
+  background: #F0E0D6;
+}
+
+/* Menu */
+:root.yotsuba #menu {
+  color: #800000;
+}
+:root.yotsuba .entry {
+  font-size: 10pt;
+}
+:root.yotsuba .focused.entry {
+  background: rgba(255, 255, 255, .33);
+}
+
+/* Unread */
+:root.yotsuba .unread-mark-read {
+  background-color: rgba(240,224,214,0.5);
+}
+
+/* Thread Watcher */
+:root.yotsuba .replies-quoting-you > a, :root.yotsuba #watcher-link.replies-quoting-you, :root.yotsuba .last-page > a > .watcher-page {
+  color: #F00;
+}
