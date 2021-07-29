@@ -1,0 +1,30 @@
+{
+  "esnext":  true,
+  "undef":   true,
+  "unused":  true,
+  "eqnull":  true,
+  "expr":    true,
+  "sub":     true,
+  "scripturl": true,
+  "browser": true,
+  "devel":   true,
+  "nonstandard": true,
+  "-W018": true,
+  "-W084": true,
+  "-W083": true,
+  "-W093": true,
+  "globals": {
+    "MediaError":   false,
+    "Set":          false,
+    "GM_info":      false,
+    "cloneInto":    false,
+    "unsafeWindow": false,
+    "chrome":       false<%=
+  meta.grants.map(x => `,\n    "${x}": false`).join('')
+%><%=
+  read('/tmp/declaration.js').match(/^var (.*);/)[1].split(', ').map(x => `,\n    "${x}": true`).join('')
+%><%=
+  read('/src/globals/globals.js').match(/^var (.*);/)[1].split(', ').map(x => `,\n    "${x}": true`).join('')
+%>
+  }
+}
